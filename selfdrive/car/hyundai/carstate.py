@@ -219,6 +219,7 @@ class CarState(CarStateBase):
       ("CR_VSM_ChkSum", "SCC12", 0),
 
       ("TPS", "EMS12", 0),
+      ("CF_Ems_AclAct", "EMS16", 0),
 
     ]
 
