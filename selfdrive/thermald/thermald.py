@@ -150,8 +150,8 @@ def handle_fan_uno(max_cpu_temp, bat_temp, fan_speed, ignition):
 
 def thermald_thread():
   # prevent LEECO from undervoltage
-  BATT_PERC_OFF = 10 if LEON else 3
-
+  #BATT_PERC_OFF = 10 if LEON else 3
+  BATT_PERC_OFF = 100 # if LEON else 3
   health_timeout = int(1000 * 2.5 * DT_TRML)  # 2.5x the expected health frequency
 
   # now loop
@@ -301,6 +301,7 @@ def thermald_thread():
     time_valid_prev = time_valid
 
     # Show update prompt
+    """
     try:
       last_update = datetime.datetime.fromisoformat(params.get("LastUpdateTime", encoding='utf8'))
     except (TypeError, ValueError):
@@ -327,6 +328,7 @@ def thermald_thread():
       current_connectivity_alert = None
       params.delete("Offroad_ConnectivityNeeded")
       params.delete("Offroad_ConnectivityNeededPrompt")
+    """
 
     do_uninstall = params.get("DoUninstall") == b"1"
     accepted_terms = params.get("HasAcceptedTerms") == terms_version
@@ -390,8 +392,8 @@ def thermald_thread():
 
       # shutdown if the battery gets lower than 3%, it's discharging, we aren't running for
       # more than a minute but we were running
-      if msg.thermal.batteryPercent < BATT_PERC_OFF and msg.thermal.batteryStatus == "Discharging" and \
-         started_seen and (sec_since_boot() - off_ts) > 60:
+      if msg.thermal.batteryPercent <= BATT_PERC_OFF and msg.thermal.batteryStatus == "Discharging" and \
+         started_seen and (sec_since_boot() - off_ts) > 38: #60:
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
     # Offroad power monitoring
