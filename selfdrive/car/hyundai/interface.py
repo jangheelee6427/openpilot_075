@@ -57,7 +57,6 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kf = 0.00005
       ret.mass = 1675. + STD_CARGO_KG
       ret.wheelbase = 2.845
-
       ret.steerRatio = 13.27 * 1.15   # 15% higher at the center seems reasonable
       #ret.steerRatio = 12.0  #12.5
       ret.steerRateCost = 0.5 #0.4
