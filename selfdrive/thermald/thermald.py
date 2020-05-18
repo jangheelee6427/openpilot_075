@@ -154,10 +154,10 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
   #   - there are health packets from panda, and;
   #   - 12V battery voltage is too low, and;
   #   - onroad isn't started
-  print(health)
+  #print(health)
   
-  battChargeMin = 70
-  battChargeMax = 80
+  battChargeMin = 58
+  battChargeMax = 60
   carVoltageMinEonShutdown = 12000
 
   if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
@@ -426,7 +426,7 @@ def thermald_thread():
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
     charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
-    print( 'battery={} batteryStatus={} started_seen={} should_start={}'.format( msg.thermal.batteryPercent, msg.thermal.batteryStatus, started_seen, should_start ) )
+    print( 'battery={} batteryStatus={} started_seen={} charging_disabled={}'.format( msg.thermal.batteryPercent, msg.thermal.batteryStatus, started_seen, charging_disabled ) )
     # Offroad power monitoring
     pm.calculate(health)
     msg.thermal.offroadPowerUsage = pm.get_power_used()
