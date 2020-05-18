@@ -396,6 +396,7 @@ def thermald_thread():
          started_seen and (sec_since_boot() - off_ts) > 38: #60:
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
+    print( 'battery={} batteryStatus={} started_seen={}'.format( msg.thermal.batteryPercent, msg.thermal.batteryStatus, started_seen ) )
     # Offroad power monitoring
     pm.calculate(health)
     msg.thermal.offroadPowerUsage = pm.get_power_used()
