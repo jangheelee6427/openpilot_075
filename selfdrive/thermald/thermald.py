@@ -148,6 +148,31 @@ def handle_fan_uno(max_cpu_temp, bat_temp, fan_speed, ignition):
   return new_speed
 
 
+def check_car_battery_voltage(should_start, health, charging_disabled, msg):
+
+  # charging disallowed if:
+  #   - there are health packets from panda, and;
+  #   - 12V battery voltage is too low, and;
+  #   - onroad isn't started
+  print(health)
+  
+  battChargeMin = 70
+  battChargeMax = 80
+  carVoltageMinEonShutdown = 12000
+
+  if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
+    charging_disabled = False
+    os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
+  elif not charging_disabled and (msg.thermal.batteryPercent > battChargeMax or (health is not None and health.health.voltage < carVoltageMinEonShutdown and not should_start)):
+    charging_disabled = True
+    os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
+  elif msg.thermal.batteryCurrent < 0 and msg.thermal.batteryPercent > battChargeMax:
+    charging_disabled = True
+    os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
+
+  return charging_disabled
+
+
 def thermald_thread():
   # prevent LEECO from undervoltage
   #BATT_PERC_OFF = 10 if LEON else 3
@@ -184,6 +209,8 @@ def thermald_thread():
   handle_fan = None
   is_uno = False
 
+  charging_disabled = False
+
   params = Params()
   pm = PowerMonitoring()
   no_panda_cnt = 0
@@ -207,8 +234,6 @@ def thermald_thread():
       else:
         no_panda_cnt = 0
         ignition = health.health.ignitionLine or health.health.ignitionCan
-
-      print( 'hwType={} ignition={}'.format( health.health.hwType, ignition ) )
 
       # Setup fan handler on first connect to panda
       if handle_fan is None and health.health.hwType != log.HealthData.HwType.unknown:
@@ -339,6 +364,8 @@ def thermald_thread():
     panda_signature = params.get("PandaFirmware")
     fw_version_match = (panda_signature is None) or (panda_signature == FW_SIGNATURE)   # don't show alert is no panda is connected (None)
 
+    #ignition = True   # 영상을 볼수 있음.
+
     should_start = ignition
 
     # with 2% left, we killall, otherwise the phone will take a long time to boot
@@ -398,6 +425,7 @@ def thermald_thread():
          started_seen and (sec_since_boot() - off_ts) > 38: #60:
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
+    charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
     print( 'battery={} batteryStatus={} started_seen={} should_start={}'.format( msg.thermal.batteryPercent, msg.thermal.batteryStatus, started_seen, should_start ) )
     # Offroad power monitoring
     pm.calculate(health)
