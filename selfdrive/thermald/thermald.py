@@ -156,8 +156,8 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
   #   - onroad isn't started
   #print(health)
   
-  battChargeMin = 58
-  battChargeMax = 60
+  battChargeMin = 65
+  battChargeMax = 80
   carVoltageMinEonShutdown = 12000
 
   if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
@@ -426,6 +426,12 @@ def thermald_thread():
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
     charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
+    msg.thermal.chargingDisabled = charging_disabled
+    if msg.thermal.batteryCurrent > 0:
+      msg.thermal.batteryStatus = "Discharging"
+    else:
+      msg.thermal.batteryStatus = "Charging"
+    
     print( 'battery={} batteryStatus={} started_seen={} charging_disabled={}'.format( msg.thermal.batteryPercent, msg.thermal.batteryStatus, started_seen, charging_disabled ) )
     # Offroad power monitoring
     pm.calculate(health)
