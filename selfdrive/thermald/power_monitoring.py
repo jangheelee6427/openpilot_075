@@ -63,6 +63,7 @@ class PowerMonitoring:
     self.power_used_uWh = 0                     # Integrated power usage in uWh since going into offroad
     self.next_pulsed_measurement_time = None
     self.integration_lock = threading.Lock()
+    self.battChargeStatus = None
 
   # Calculation tick
   def calculate(self, health):
@@ -100,12 +101,26 @@ class PowerMonitoring:
 
       print( 'measurement_time {} {}  {} {} batteryPercent={}'.format( self.next_pulsed_measurement_time, now, battery_voltage, battery_current, batteryPercent) )
 
+      battChargeMax = 68  #80
+      battChargeMin = 67  #65
+
+
+      if batteryPercent > battChargeMax:
+        battChargeEnable = False
+      elif  batteryPercent < battChargeMin:
+        battChargeEnable = True
+
+
+      if self.battChargeStatus != battChargeEnable:
+        self.battChargeStatus = battChargeEnable
+        set_battery_charging( battChargeEnable )
+        print( 'charging {}'.format(battChargeEnable) )
 
       #is_uno = health.health.hwType == log.HealthData.HwType.uno
       is_uno = False
       # Get current power draw somehow
       current_power = 0
-      if get_battery_status() == 'Discharging':
+      if get_battery_status() == 'Discharging' or battChargeDisable:
         # If the battery is discharging, we can use this measurement
         # On C2: this is low by about 10-15%, probably mostly due to UNO draw not being factored in
         current_power = ((battery_voltage / 1000000) * (battery_current / 1000000))
