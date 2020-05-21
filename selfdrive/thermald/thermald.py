@@ -209,7 +209,7 @@ def thermald_thread():
   handle_fan = None
   is_uno = False
 
-  charging_disabled = False
+  charging_disabled = None
 
   params = Params()
   pm = PowerMonitoring()
@@ -272,6 +272,12 @@ def thermald_thread():
     msg.thermal.batteryCurrent = get_battery_current()
     msg.thermal.batteryVoltage = get_battery_voltage()
     msg.thermal.usbOnline = get_usb_present()
+
+    if charging_disabled is None:
+      if msg.thermal.batteryCurrent > 0:
+        charging_disabled = True
+      else:
+        charging_disabled = False
 
     # Fake battery levels on uno for frame
     if is_uno:
@@ -427,15 +433,15 @@ def thermald_thread():
 
     charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
     msg.thermal.chargingDisabled = charging_disabled
-    #if msg.thermal.batteryCurrent > 0:
-    if charging_disabled:
+    if msg.thermal.batteryCurrent > 0:
+    #if charging_disabled:
       msg.thermal.batteryStatus = "Discharging"
     else:
       msg.thermal.batteryStatus = "Charging"
 
     print( msg )
     
-    #print( 'charging_disabled={}'.format( charging_disabled ) )
+    print( 'charging_disabled={}'.format( charging_disabled ) )
     # Offroad power monitoring
     pm.calculate(health)
     msg.thermal.offroadPowerUsage = pm.get_power_used()
