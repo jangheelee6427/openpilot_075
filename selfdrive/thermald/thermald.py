@@ -160,23 +160,37 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
   battChargeMax = 58
   carVoltageMinEonShutdown = 12000
 
-  if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
-    charging_disabled = False
-    #set_battery_charging( True )
-    os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
-    print('1.echo 1 > /sys/class/power_supply/battery/charging_enabled')
-  elif not charging_disabled and (msg.thermal.batteryPercent > battChargeMax or (health is not None and health.health.voltage < carVoltageMinEonShutdown and not should_start)):
-    charging_disabled = True
-    #set_battery_charging( False )
-    os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
-    print('2.echo 0 > /sys/class/power_supply/battery/charging_enabled')
-  elif msg.thermal.batteryCurrent < 0 and msg.thermal.batteryPercent > battChargeMax:
-    charging_disabled = True
-    #set_battery_charging( False )
-    os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
-    print('3.echo 0 > /sys/class/power_supply/battery/charging_enabled')
+  new_charging_disable = charging_disabled
 
-  return charging_disabled
+
+  if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
+    new_charging_disable = False
+    #charging_disabled = False
+    #set_battery_charging( True )
+    #os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
+    #print('1.echo 1 > /sys/class/power_supply/battery/charging_enabled')
+  elif not charging_disabled and (msg.thermal.batteryPercent > battChargeMax or (health is not None and health.health.voltage < carVoltageMinEonShutdown and not should_start)):
+    new_charging_disable = True
+    #charging_disabled = True
+    #set_battery_charging( False )
+    #os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
+    #print('2.echo 0 > /sys/class/power_supply/battery/charging_enabled')
+  elif msg.thermal.batteryCurrent < 0 and msg.thermal.batteryPercent > battChargeMax:
+    new_charging_disable = True
+    #charging_disabled = True
+    #set_battery_charging( False )
+    #os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
+    #print('3.echo 0 > /sys/class/power_supply/battery/charging_enabled')
+
+  if new_charging_disable != charging_disabled:
+    if new_charging_disable:
+      os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
+      print('4.echo 1 > /sys/class/power_supply/battery/charging_enabled')
+    else:
+      os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
+      print('5.echo 0 > /sys/class/power_supply/battery/charging_enabled')
+
+  return new_charging_disable
 
 
 def thermald_thread():
