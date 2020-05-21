@@ -120,7 +120,7 @@ class PowerMonitoring:
       is_uno = False
       # Get current power draw somehow
       current_power = 0
-      if get_battery_status() == 'Discharging' or battChargeDisable:
+      if get_battery_status() == 'Discharging' or not self.battChargeStatus:
         # If the battery is discharging, we can use this measurement
         # On C2: this is low by about 10-15%, probably mostly due to UNO draw not being factored in
         current_power = ((battery_voltage / 1000000) * (battery_current / 1000000))
