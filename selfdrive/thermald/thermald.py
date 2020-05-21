@@ -184,11 +184,11 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
 
   if new_charging_disable != charging_disabled:
     if new_charging_disable:
-      os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
-      print('4.echo 1 > /sys/class/power_supply/battery/charging_enabled')
-    else:
       os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
-      print('5.echo 0 > /sys/class/power_supply/battery/charging_enabled')
+      print('4.echo 0 > /sys/class/power_supply/battery/charging_enabled')
+    else:
+      os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
+      print('5.echo 1 > /sys/class/power_supply/battery/charging_enabled')
 
   return new_charging_disable
 
