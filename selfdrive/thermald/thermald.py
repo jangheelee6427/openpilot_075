@@ -403,15 +403,17 @@ def thermald_thread():
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
 
-    chargingDisabled = msg.thermal.chargingDisabled
+    chargingDisabled = charging_disabled
     if msg.thermal.batteryCurrent > 0:
-      msg.thermal.chargingDisabled = True
+      chargingDisabled = True
       msg.thermal.batteryStatus = "Discharging"
     else:
-      msg.thermal.chargingDisabled = False
+      chargingDisabled = False
       msg.thermal.batteryStatus = "Charging"
 
-    if chargingDisabled != msg.thermal.chargingDisabled:
+    if chargingDisabled != charging_disabled:
+      msg.thermal.chargingDisabled = chargingDisabled
+      charging_disabled = chargingDisabled
       print( msg )
 
     # Offroad power monitoring
