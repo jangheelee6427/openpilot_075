@@ -433,7 +433,7 @@ def thermald_thread():
     else:
       msg.thermal.batteryStatus = "Charging"
 
-    #print( msg )
+    print( msg )
     
     #print( 'charging_disabled={}'.format( charging_disabled ) )
     # Offroad power monitoring
