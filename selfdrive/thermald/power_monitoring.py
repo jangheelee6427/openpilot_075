@@ -94,10 +94,11 @@ class PowerMonitoring:
           self.last_measurement_time = now
           return
 
-      print( self.last_measurement_time )
 
 
-      is_uno = health.health.hwType == log.HealthData.HwType.uno
+
+      #is_uno = health.health.hwType == log.HealthData.HwType.uno
+      is_uno = False
       # Get current power draw somehow
       current_power = 0
       if get_battery_status() == 'Discharging':
