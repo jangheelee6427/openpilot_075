@@ -17,7 +17,7 @@ from selfdrive.swaglog import cloudlog
 import cereal.messaging as messaging
 from selfdrive.loggerd.config import get_available_percent
 from selfdrive.pandad import get_expected_signature
-from selfdrive.thermald.power_monitoring import PowerMonitoring, get_battery_capacity, get_battery_status, get_battery_current, get_battery_voltage, get_usb_present, set_battery_charging
+from selfdrive.thermald.power_monitoring import PowerMonitoring, get_battery_capacity, get_battery_status, get_battery_current, get_battery_voltage, get_usb_present
 
 FW_SIGNATURE = get_expected_signature()
 
@@ -148,49 +148,6 @@ def handle_fan_uno(max_cpu_temp, bat_temp, fan_speed, ignition):
   return new_speed
 
 
-def check_car_battery_voltage(should_start, health, charging_disabled, msg):
-
-  # charging disallowed if:
-  #   - there are health packets from panda, and;
-  #   - 12V battery voltage is too low, and;
-  #   - onroad isn't started
-  #print(health)
-  
-  battChargeMin = 58
-  battChargeMax = 58
-  carVoltageMinEonShutdown = 12000
-
-  new_charging_disable = charging_disabled
-
-
-  if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
-    new_charging_disable = False
-    #charging_disabled = False
-    #set_battery_charging( True )
-    #os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
-    #print('1.echo 1 > /sys/class/power_supply/battery/charging_enabled')
-  elif not charging_disabled and (msg.thermal.batteryPercent > battChargeMax or (health is not None and health.health.voltage < carVoltageMinEonShutdown and not should_start)):
-    new_charging_disable = True
-    #charging_disabled = True
-    #set_battery_charging( False )
-    #os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
-    #print('2.echo 0 > /sys/class/power_supply/battery/charging_enabled')
-  elif msg.thermal.batteryCurrent < 0 and msg.thermal.batteryPercent > battChargeMax:
-    new_charging_disable = True
-    #charging_disabled = True
-    #set_battery_charging( False )
-    #os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
-    #print('3.echo 0 > /sys/class/power_supply/battery/charging_enabled')
-
-  if new_charging_disable != charging_disabled:
-    if new_charging_disable:
-      os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
-      print('4.echo 0 > /sys/class/power_supply/battery/charging_enabled')
-    else:
-      os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
-      print('5.echo 1 > /sys/class/power_supply/battery/charging_enabled')
-
-  return new_charging_disable
 
 
 def thermald_thread():
@@ -445,29 +402,6 @@ def thermald_thread():
          started_seen and (sec_since_boot() - off_ts) > 38: #60:
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
-
-    if charging_disabled is None:
-      if msg.thermal.batteryCurrent > 0:
-        charging_disabled = True
-      else:
-        charging_disabled = False
-      print( 'first charging_disabled={} {}'.format( charging_disabled, msg ) )
-
-
-    charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
-    
-    if msg.thermal.batteryCurrent > 0:
-      charging_disabled = True
-      msg.thermal.batteryStatus = "Discharging"
-    else:
-      charging_disabled = False
-      msg.thermal.batteryStatus = "Charging"
-
-    msg.thermal.chargingDisabled = charging_disabled
-
-    #print( msg )
-    
-    print( 'charging_disabled={}  batteryCurrent={} Percent={}'.format( charging_disabled, msg.thermal.batteryCurrent, msg.thermal.batteryPercent ) )
     # Offroad power monitoring
     pm.calculate(health)
     msg.thermal.offroadPowerUsage = pm.get_power_used()
@@ -478,6 +412,8 @@ def thermald_thread():
 
     msg.thermal.thermalStatus = thermal_status
     thermal_sock.send(msg.to_bytes())
+
+    print( msg )
 
     if usb_power_prev and not usb_power:
       put_nonblocking("Offroad_ChargeDisabled", json.dumps(OFFROAD_ALERTS["Offroad_ChargeDisabled"]))
