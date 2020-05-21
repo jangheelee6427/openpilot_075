@@ -442,7 +442,7 @@ def thermald_thread():
 
     print( msg )
     
-    print( 'charging_disabled={}  batteryCurrent={}'.format( charging_disabled, msg.thermal.batteryCurrent ) )
+    print( 'charging_disabled={}  batteryCurrent={} Percent={}'.format( charging_disabled, msg.thermal.batteryCurrent, msg.thermal.batteryPercent ) )
     # Offroad power monitoring
     pm.calculate(health)
     msg.thermal.offroadPowerUsage = pm.get_power_used()
