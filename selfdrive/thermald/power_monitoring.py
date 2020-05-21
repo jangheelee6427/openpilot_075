@@ -73,9 +73,9 @@ class PowerMonitoring:
       if datetime.datetime.fromtimestamp(now).year < 2019:
         return
 
-      health.health.hwType = log.HealthData.HwType.whitePanda
-      
-      print( health )
+ 
+
+      """
       # Only integrate when there is no ignition
       # If health is None, we're probably not in a car, so we don't care
       if health is None or (health.health.ignitionLine or health.health.ignitionCan) or \
@@ -86,13 +86,15 @@ class PowerMonitoring:
           self.power_used_uWh = 0
         return
 
+      """
+
       # First measurement, set integration time
       with self.integration_lock:
         if self.last_measurement_time is None:
           self.last_measurement_time = now
           return
 
-
+      print( self.last_measurement_time )
 
 
       is_uno = health.health.hwType == log.HealthData.HwType.uno
