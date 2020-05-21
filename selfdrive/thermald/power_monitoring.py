@@ -95,6 +95,7 @@ class PowerMonitoring:
           return
 
 
+      print( 'measurement_time {} {}'.format( self.next_pulsed_measurement_time, now) )
 
 
       #is_uno = health.health.hwType == log.HealthData.HwType.uno
@@ -119,7 +120,7 @@ class PowerMonitoring:
           try:
             set_battery_charging(False)
             time.sleep(5)
-
+            print( 'charging off')
             # Measure for a few sec to get a good average
             voltages = []
             currents = []
@@ -133,6 +134,7 @@ class PowerMonitoring:
 
             # Enable charging again
             set_battery_charging(True)
+            print( 'charging on')
           except Exception:
             cloudlog.exception("Pulsed power measurement failed")
 
