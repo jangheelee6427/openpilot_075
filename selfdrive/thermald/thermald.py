@@ -215,7 +215,7 @@ def thermald_thread():
   handle_fan = None
   is_uno = False
 
-  charging_disabled = False
+  charging_disabled = True
 
   params = Params()
   pm = PowerMonitoring()
