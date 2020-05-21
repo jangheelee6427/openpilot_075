@@ -104,7 +104,7 @@ class PowerMonitoring:
       battChargeMax = 69  #80
       battChargeMin = 68  #65
 
-
+      battChargeEnable = self.battChargeStatus
       if batteryPercent > battChargeMax:
         battChargeEnable = False
       elif  batteryPercent < battChargeMin:
