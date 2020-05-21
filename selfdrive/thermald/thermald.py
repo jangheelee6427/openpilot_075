@@ -413,7 +413,7 @@ def thermald_thread():
     msg.thermal.thermalStatus = thermal_status
     thermal_sock.send(msg.to_bytes())
 
-    print( 'status={} batterry={}'.format( msg.thermal.batteryStatus,  msg.thermal.batteryCurrent ) )
+    print( 'status={} batterry={} Percent={}'.format( msg.thermal.batteryStatus,  msg.thermal.batteryCurrent, msg.thermal.batteryPercent ) )
 
     if usb_power_prev and not usb_power:
       put_nonblocking("Offroad_ChargeDisabled", json.dumps(OFFROAD_ALERTS["Offroad_ChargeDisabled"]))
