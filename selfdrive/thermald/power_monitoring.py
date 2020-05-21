@@ -94,8 +94,11 @@ class PowerMonitoring:
           self.last_measurement_time = now
           return
 
+      batteryPercent = get_battery_capacity()
+      battery_voltage =  get_battery_voltage()
+      battery_current =  get_battery_current()
 
-      print( 'measurement_time {} {}'.format( self.next_pulsed_measurement_time, now) )
+      print( 'measurement_time {} {}  {} {} batteryPercent={}'.format( self.next_pulsed_measurement_time, now, battery_voltage, battery_current, batteryPercent) )
 
 
       #is_uno = health.health.hwType == log.HealthData.HwType.uno
@@ -105,7 +108,7 @@ class PowerMonitoring:
       if get_battery_status() == 'Discharging':
         # If the battery is discharging, we can use this measurement
         # On C2: this is low by about 10-15%, probably mostly due to UNO draw not being factored in
-        current_power = ((get_battery_voltage() / 1000000) * (get_battery_current() / 1000000))
+        current_power = ((battery_voltage / 1000000) * (battery_current / 1000000))
       elif health and (health.health.hwType in [log.HealthData.HwType.whitePanda, log.HealthData.HwType.greyPanda]) and (health.health.current > 1):
         # If white/grey panda, use the integrated current measurements if the measurement is not 0
         # If the measurement is 0, the current is 400mA or greater, and out of the measurement range of the panda
