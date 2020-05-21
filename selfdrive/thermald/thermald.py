@@ -399,7 +399,6 @@ def thermald_thread():
          started_seen and (sec_since_boot() - off_ts) > 38: #60:
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
-    #print( msg )
     
     # Offroad power monitoring
     pm.calculate(health)
@@ -411,6 +410,8 @@ def thermald_thread():
 
     msg.thermal.thermalStatus = thermal_status
     thermal_sock.send(msg.to_bytes())
+
+    print( msg )
 
     if usb_power_prev and not usb_power:
       put_nonblocking("Offroad_ChargeDisabled", json.dumps(OFFROAD_ALERTS["Offroad_ChargeDisabled"]))
