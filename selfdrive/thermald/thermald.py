@@ -215,7 +215,7 @@ def thermald_thread():
   handle_fan = None
   is_uno = False
 
-  charging_disabled = True
+  charging_disabled = None
 
   params = Params()
   pm = PowerMonitoring()
@@ -430,6 +430,14 @@ def thermald_thread():
       if msg.thermal.batteryPercent <= BATT_PERC_OFF and msg.thermal.batteryStatus == "Discharging" and \
          started_seen and (sec_since_boot() - off_ts) > 38: #60:
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
+
+
+    if charging_disabled is None:
+      if msg.thermal.batteryCurrent > 0:
+        charging_disabled = True
+      else:
+        charging_disabled = False
+
 
     charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
     
