@@ -433,7 +433,10 @@ def thermald_thread():
 
 
     if charging_disabled is None:
-      charging_disabled = msg.thermal.chargingDisabled
+      if msg.thermal.batteryStatus == "Charging":
+        charging_disabled = False
+      else:
+        charging_disabled = True
       print( 'first charging_disabled={} {}'.format( charging_disabled, msg ) )
 
 
