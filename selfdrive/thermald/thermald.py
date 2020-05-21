@@ -433,10 +433,7 @@ def thermald_thread():
 
 
     if charging_disabled is None:
-      if msg.thermal.batteryCurrent > 0:
-        charging_disabled = True
-      else:
-        charging_disabled = False
+      charging_disabled = msg.thermal.chargingDisabled
 
 
     charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
