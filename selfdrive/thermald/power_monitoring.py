@@ -73,6 +73,7 @@ class PowerMonitoring:
       if datetime.datetime.fromtimestamp(now).year < 2019:
         return
 
+      print( health )
       # Only integrate when there is no ignition
       # If health is None, we're probably not in a car, so we don't care
       if health is None or (health.health.ignitionLine or health.health.ignitionCan) or \
@@ -90,7 +91,7 @@ class PowerMonitoring:
           return
 
 
-      print( health )
+
 
       is_uno = health.health.hwType == log.HealthData.HwType.uno
       # Get current power draw somehow
