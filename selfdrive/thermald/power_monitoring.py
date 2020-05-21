@@ -89,6 +89,9 @@ class PowerMonitoring:
           self.last_measurement_time = now
           return
 
+
+      print( health )
+
       is_uno = health.health.hwType == log.HealthData.HwType.uno
       # Get current power draw somehow
       current_power = 0
