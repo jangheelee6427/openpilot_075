@@ -156,8 +156,8 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
   #   - onroad isn't started
   #print(health)
   
-  battChargeMin = 62
-  battChargeMax = 63
+  battChargeMin = 69
+  battChargeMax = 70
   carVoltageMinEonShutdown = 12000
 
   if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
