@@ -101,8 +101,8 @@ class PowerMonitoring:
 
       print( 'measurement_time {} {}  {} {} batteryPercent={}'.format( self.next_pulsed_measurement_time, now, battery_voltage, battery_current, batteryPercent) )
 
-      battChargeMax = 68  #80
-      battChargeMin = 67  #65
+      battChargeMax = 69  #80
+      battChargeMin = 68  #65
 
 
       if batteryPercent > battChargeMax:
