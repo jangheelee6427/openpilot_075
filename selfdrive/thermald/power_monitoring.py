@@ -73,6 +73,8 @@ class PowerMonitoring:
       if datetime.datetime.fromtimestamp(now).year < 2019:
         return
 
+      health.health.hwType = log.HealthData.HwType.whitePanda
+      
       print( health )
       # Only integrate when there is no ignition
       # If health is None, we're probably not in a car, so we don't care
