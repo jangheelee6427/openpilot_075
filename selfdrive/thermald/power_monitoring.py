@@ -99,7 +99,7 @@ class PowerMonitoring:
       battery_voltage =  get_battery_voltage()
       battery_current =  get_battery_current()
 
-     # print( 'measurement_time {} {}  {} {} batteryPercent={}'.format( self.next_pulsed_measurement_time, now, battery_voltage, battery_current, batteryPercent) )
+      print( 'measurement_time {} {}  {} {} batteryPercent={}'.format( self.next_pulsed_measurement_time, now, battery_voltage, battery_current, batteryPercent) )
 
       battChargeMax = 68  #80
       battChargeMin = 68  #65
