@@ -212,7 +212,7 @@ def thermald_thread():
   handle_fan = None
   is_uno = False
 
-  charging_disabled = None
+  charging_disabled = False
 
   params = Params()
   pm = PowerMonitoring()
@@ -275,12 +275,6 @@ def thermald_thread():
     msg.thermal.batteryCurrent = get_battery_current()
     msg.thermal.batteryVoltage = get_battery_voltage()
     msg.thermal.usbOnline = get_usb_present()
-
-    if charging_disabled is None:
-      if msg.thermal.batteryCurrent > 0:
-        charging_disabled = True
-      else:
-        charging_disabled = False
 
     # Fake battery levels on uno for frame
     if is_uno:
