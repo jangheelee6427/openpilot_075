@@ -101,8 +101,8 @@ class PowerMonitoring:
 
      
 
-      battChargeMax = 68  #80
-      battChargeMin = 68  #65
+      battChargeMax = 80  #80
+      battChargeMin = 60  #65
 
       if battery_current > 0:
         self.battChargeStatus = False
