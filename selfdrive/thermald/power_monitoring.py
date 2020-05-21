@@ -65,6 +65,26 @@ class PowerMonitoring:
     self.integration_lock = threading.Lock()
     self.battChargeStatus = None
 
+
+  def battCharge(self):
+      battChargeMax = 80  #80
+      battChargeMin = 65  #65
+    
+      batteryPercent = get_battery_capacity()
+      battChargeEnable = self.battChargeStatus
+
+      if batteryPercent > battChargeMax:
+        battChargeEnable = False
+      elif  batteryPercent < battChargeMin:
+        battChargeEnable = True
+
+      if self.battChargeStatus != battChargeEnable:
+        self.battChargeStatus = battChargeEnable
+        set_battery_charging( battChargeEnable )
+        print( 'charging={}  batteryPercent={}'.format(battChargeEnable, batteryPercent) )
+
+      return battChargeEnable
+
   # Calculation tick
   def calculate(self, health):
     try:
@@ -74,9 +94,6 @@ class PowerMonitoring:
       if datetime.datetime.fromtimestamp(now).year < 2019:
         return
 
- 
-
-      """
       # Only integrate when there is no ignition
       # If health is None, we're probably not in a car, so we don't care
       if health is None or (health.health.ignitionLine or health.health.ignitionCan) or \
@@ -87,48 +104,31 @@ class PowerMonitoring:
           self.power_used_uWh = 0
         return
 
-      """
-
       # First measurement, set integration time
       with self.integration_lock:
         if self.last_measurement_time is None:
           self.last_measurement_time = now
           return
 
-      batteryPercent = get_battery_capacity()
-      battery_voltage =  get_battery_voltage()
+      
+      battery_voltage = get_battery_voltage()
       battery_current =  get_battery_current()
-
-     
-
-      battChargeMax = 80  #80
-      battChargeMin = 65  #65
-
+   
       if self.battChargeStatus is None:
         if battery_current > 0:
           self.battChargeStatus = False
         else:
           self.battChargeStatus = True
 
-      battChargeEnable = self.battChargeStatus
-      if batteryPercent > battChargeMax:
-        battChargeEnable = False
-      elif  batteryPercent < battChargeMin:
-        battChargeEnable = True
+      self.battCharge()
 
+      is_uno = health.health.hwType == log.HealthData.HwType.uno
 
-      print( 'measurement_time {} {}  {} {} batteryPercent={} {}=={}'.format( self.next_pulsed_measurement_time, now, battery_voltage, battery_current, batteryPercent, battChargeEnable, self.battChargeStatus ) )
-
-      if self.battChargeStatus != battChargeEnable:
-        self.battChargeStatus = battChargeEnable
-        set_battery_charging( battChargeEnable )
-        print( 'charging {}'.format(battChargeEnable) )
-
-      #is_uno = health.health.hwType == log.HealthData.HwType.uno
-      is_uno = False
       # Get current power draw somehow
       current_power = 0
-      if get_battery_status() == 'Discharging' or not self.battChargeStatus:
+      if not self.battChargeStatus:
+        return
+      elif get_battery_status() == 'Discharging':
         # If the battery is discharging, we can use this measurement
         # On C2: this is low by about 10-15%, probably mostly due to UNO draw not being factored in
         current_power = ((battery_voltage / 1000000) * (battery_current / 1000000))
