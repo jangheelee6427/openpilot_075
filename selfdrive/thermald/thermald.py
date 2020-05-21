@@ -410,9 +410,9 @@ def thermald_thread():
     else:
       chargingDisabled = False
       msg.thermal.batteryStatus = "Charging"
+    msg.thermal.chargingDisabled = chargingDisabled
 
     if chargingDisabled != charging_disabled:
-      msg.thermal.chargingDisabled = chargingDisabled
       charging_disabled = chargingDisabled
       print( msg )
 
