@@ -17,7 +17,7 @@ from selfdrive.swaglog import cloudlog
 import cereal.messaging as messaging
 from selfdrive.loggerd.config import get_available_percent
 from selfdrive.pandad import get_expected_signature
-from selfdrive.thermald.power_monitoring import PowerMonitoring, get_battery_capacity, get_battery_status, get_battery_current, get_battery_voltage, get_usb_present
+from selfdrive.thermald.power_monitoring import PowerMonitoring, get_battery_capacity, get_battery_status, get_battery_current, get_battery_voltage, get_usb_present, set_battery_charging
 
 FW_SIGNATURE = get_expected_signature()
 
@@ -162,15 +162,18 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
 
   if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
     charging_disabled = False
-    os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
+    set_battery_charging( True )
+    #os.system('echo 1 > /sys/class/power_supply/battery/charging_enabled')
     print('1.echo 1 > /sys/class/power_supply/battery/charging_enabled')
   elif not charging_disabled and (msg.thermal.batteryPercent > battChargeMax or (health is not None and health.health.voltage < carVoltageMinEonShutdown and not should_start)):
     charging_disabled = True
-    os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
+    set_battery_charging( False )
+    #os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
     print('2.echo 1 > /sys/class/power_supply/battery/charging_enabled')
   elif msg.thermal.batteryCurrent < 0 and msg.thermal.batteryPercent > battChargeMax:
     charging_disabled = True
-    os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
+    set_battery_charging( False )
+    #os.system('echo 0 > /sys/class/power_supply/battery/charging_enabled')
     print('3.echo 0 > /sys/class/power_supply/battery/charging_enabled')
 
   return charging_disabled
@@ -367,7 +370,7 @@ def thermald_thread():
     panda_signature = params.get("PandaFirmware")
     fw_version_match = (panda_signature is None) or (panda_signature == FW_SIGNATURE)   # don't show alert is no panda is connected (None)
 
-    #ignition = True   # 영상을 볼수 있음.
+    ignition = True   # 영상을 볼수 있음.
 
     should_start = ignition
 
