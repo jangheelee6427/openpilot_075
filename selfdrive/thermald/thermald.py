@@ -156,8 +156,8 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
   #   - onroad isn't started
   #print(health)
   
-  battChargeMin = 65
-  battChargeMax = 80
+  battChargeMin = 62
+  battChargeMax = 63
   carVoltageMinEonShutdown = 12000
 
   if charging_disabled and (health is None or health.health.voltage > carVoltageMinEonShutdown+500) and msg.thermal.batteryPercent < battChargeMin:
@@ -429,12 +429,16 @@ def thermald_thread():
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
     charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
-    msg.thermal.chargingDisabled = charging_disabled
+    
     if msg.thermal.batteryCurrent > 0:
     #if charging_disabled:
+      charging_disabled = True
       msg.thermal.batteryStatus = "Discharging"
     else:
+      charging_disabled = False
       msg.thermal.batteryStatus = "Charging"
+
+    msg.thermal.chargingDisabled = charging_disabled
 
     print( msg )
     
