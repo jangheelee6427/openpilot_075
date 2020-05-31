@@ -4,7 +4,7 @@
 #include <map>
 #include "ui.hpp"
 
-float  fFontSize = 0.5
+float  fFontSize = 0.5;
 
 static void ui_draw_sidebar_background(UIState *s) {
   int sbr_x = !s->scene.uilayout_sidebarcollapsed ? 0 : -(sbr_w) + bdr_s * 2;
