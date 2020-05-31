@@ -27,6 +27,8 @@ const uint8_t alert_colors[][4] = {
   [STATUS_ALERT] = {0xC9, 0x22, 0x31, 0xe},
 };
 
+float  fFontSize = 0.8;
+
 // Projects a point in car to space to the corresponding point in full frame
 // image space.
 vec3 car_space_to_full_frame(const UIState *s, vec4 car_space_projective) {
@@ -52,7 +54,7 @@ static float lerp(float v0, float v1, float t) {
 
 static void ui_draw_text(NVGcontext *vg, float x, float y, const char* string, float size, NVGcolor color, int font){
   nvgFontFaceId(vg, font);
-  nvgFontSize(vg, size);
+  nvgFontSize(vg, size*fFontSize);
   nvgFillColor(vg, color);
   nvgText(vg, x, y, string, NULL);
 }
@@ -417,12 +419,12 @@ static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_
    }
   //print value
   nvgFontFace(s->vg, "sans-semibold");
-  nvgFontSize(s->vg, bb_valueFontSize*2);
+  nvgFontSize(s->vg, bb_valueFontSize*2*fFontSize);
   nvgFillColor(s->vg, bb_valueColor);
   nvgText(s->vg, bb_x-dx/2, bb_y+ (int)(bb_valueFontSize*2.5)+5, bb_value, NULL);
   //print label
   nvgFontFace(s->vg, "sans-regular");
-  nvgFontSize(s->vg, bb_labelFontSize*2);
+  nvgFontSize(s->vg, bb_labelFontSize*2*fFontSize);
   nvgFillColor(s->vg, bb_labelColor);
   nvgText(s->vg, bb_x, bb_y + (int)(bb_valueFontSize*2.5)+5 + (int)(bb_labelFontSize*2.5)+5, bb_label, NULL);
   //print uom
@@ -433,7 +435,7 @@ static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_
     nvgTranslate(s->vg,rx,ry);
     nvgRotate(s->vg, -1.5708); //-90deg in radians
     nvgFontFace(s->vg, "sans-regular");
-    nvgFontSize(s->vg, (int)(bb_uomFontSize*2));
+    nvgFontSize(s->vg, (int)(bb_uomFontSize*2*fFontSize));
     nvgFillColor(s->vg, bb_uomColor);
     nvgText(s->vg, 0, 0, bb_uom, NULL);
     nvgRestore(s->vg);
@@ -494,7 +496,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
-  
+
 /*
     //add battery level
     if(true) {
@@ -881,7 +883,7 @@ static void ui_draw_debug(UIState *s)
 
 
   nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
-  nvgFontSize(s->vg, 36*1.5);
+  nvgFontSize(s->vg, 36*1.5*fFontSize);
 
 
 
@@ -1079,11 +1081,11 @@ void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, 
     ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2-45, va_text1, 48*2.5, COLOR_WHITE, s->font_sans_bold);
     ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+75, va_text2, 36*2.5, COLOR_WHITE, s->font_sans_regular);
   } else if (va_size == cereal::ControlsState::AlertSize::FULL) {
-    nvgFontSize(s->vg, (longAlert1?72:96)*2.5);
+    nvgFontSize(s->vg, (longAlert1?72:96)*2.5*fFontSize);
     nvgFontFaceId(s->vg, s->font_sans_bold);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, alr_x, alr_y+(longAlert1?360:420), alr_w-60, va_text1, NULL);
-    nvgFontSize(s->vg, 48*2.5);
+    nvgFontSize(s->vg, 48*2.5*fFontSize);
     nvgFontFaceId(s->vg,  s->font_sans_regular);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BOTTOM);
     nvgTextBox(s->vg, alr_x, alr_h-(longAlert1?300:360), alr_w-60, va_text2, NULL);
