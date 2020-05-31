@@ -26,7 +26,7 @@ class CarInterface(CarInterfaceBase):
     ret.safetyModel = car.CarParams.SafetyModel.hyundai
 
     # Hyundai port is a community feature for now
-    ret.communityFeature = True
+    ret.communityFeature = False
 
     ret.steerActuatorDelay = 0.1  # Default delay
     ret.steerRateCost = 0.5
@@ -63,6 +63,15 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 13.75 * 1.15
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.25], [0.05]]
+    elif candidate == CAR.GRANDEUR_HYBRID:
+      ret.lateralTuning.pid.kf = 0.00005
+      ret.mass = 1675. + STD_CARGO_KG
+      ret.wheelbase = 2.845
+      ret.steerRatio = 13.27 * 1.15   # 15% higher at the center seems reasonable
+      #ret.steerRatio = 12.0  #12.5
+      ret.steerRateCost = 0.5 #0.4
+      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.25], [0.05]]         
     elif candidate == CAR.KIA_SORENTO:
       ret.lateralTuning.pid.kf = 0.00005
       ret.mass = 1985. + STD_CARGO_KG
