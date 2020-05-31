@@ -444,8 +444,8 @@ void handle_message(UIState *s,  Message* msg) {
     std::string user_text2 = data.getAlertTextMsg2();
 
 
-    char* va_text1 = user_text1.c_str();
-    char* va_text2 = user_text2.c_str();
+    const char* va_text1 = user_text1.c_str();
+    const char* va_text2 = user_text2.c_str();
     if (va_text1) 
     {
       snprintf(s->scene.alert_msg.alert_text1, sizeof(s->scene.alert_msg.alert_text1), "%s", va_text1);
