@@ -335,7 +335,7 @@ def thermald_thread():
     panda_signature = params.get("PandaFirmware")
     fw_version_match = (panda_signature is None) or (panda_signature == FW_SIGNATURE)   # don't show alert is no panda is connected (None)
 
-    #ignition = True  # 영상 나오게 하는 방법
+    ignition = True  # 영상 나오게 하는 방법
 
     should_start = ignition
 
