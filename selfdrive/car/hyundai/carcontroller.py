@@ -6,6 +6,8 @@ from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create
 from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR
 from opendbc.can.packer import CANPacker
 
+import common.log as trace1
+
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
 # Accel limits
@@ -169,5 +171,9 @@ class CarController():
     # 20 Hz LFA MFA message
     if frame % 5 == 0 and self.car_fingerprint in [CAR.SONATA, CAR.PALISADE, CAR.SONATA_H]:
       can_sends.append(create_lfa_mfa(self.packer, frame, enabled))
+
+    str_log1 = 'torg:{:5.0f} SA={:.0f}'.format( apply_steer, CS.out.steeringAngle )
+    str_log2 = 'steer={:5.0f} sw{:.0f}'.format( CS.steer_torque_driver, CS.clu_CruiseSwState  )
+    trace1.printf( '{} {}'.format( str_log1, str_log2 ) )
 
     return can_sends

@@ -545,14 +545,6 @@ static void ui_draw_debug(UIState *s)
 
 
 
-  snprintf(speed_str, sizeof(speed_str), "P:%.5f", scene->pid.p );
-  nvgText(s->vg, x_pos, y_pos+0, speed_str, NULL);
-  snprintf(speed_str, sizeof(speed_str), "I:%.5f", scene->pid.i );
-  nvgText(s->vg, x_pos, y_pos+50, speed_str, NULL);
-  snprintf(speed_str, sizeof(speed_str), "F:%.5f", scene->pid.f );
-  nvgText(s->vg, x_pos, y_pos+100, speed_str, NULL);
-
-
   snprintf(speed_str, sizeof(speed_str), "%s", scene->status.alert_text1 );
   nvgText(s->vg, 0, 1020, speed_str, NULL);  
 
