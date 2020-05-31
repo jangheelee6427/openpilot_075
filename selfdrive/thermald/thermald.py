@@ -337,6 +337,8 @@ def thermald_thread():
 
     #ignition = True  # 영상 나오게 하는 방법
 
+
+
     should_start = ignition
 
     # with 2% left, we killall, otherwise the phone will take a long time to boot
