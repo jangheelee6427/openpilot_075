@@ -438,6 +438,27 @@ void handle_message(UIState *s,  Message* msg) {
         }
       }
     }
+
+
+// debug Message
+    if (data.alertTextMsg1.str) 
+    {
+      snprintf(s->scene.status.alert_text1, sizeof(s->scene.status.alert_text1), "%s", data.alertTextMsg1.str);
+    } 
+    else 
+    {
+      s->scene.status.alert_text1[0] = '\0';
+    }
+
+    if (data.alertTextMsg2.str) 
+    {
+      snprintf(s->scene.status.alert_text2, sizeof(s->scene.status.alert_text2), "%s", data.alertTextMsg2.str);
+    } 
+    else 
+    {
+      s->scene.status.alert_text2[0] = '\0';
+    }
+
   } else if (which == cereal::Event::RADAR_STATE) {
     auto data = event.getRadarState();
 
@@ -534,24 +555,6 @@ void handle_message(UIState *s,  Message* msg) {
   }
 
 
-// debug Message
-    if (datad.alertTextMsg1.str) 
-    {
-      snprintf(s->scene.status.alert_text1, sizeof(s->scene.status.alert_text1), "%s", datad.alertTextMsg1.str);
-    } 
-    else 
-    {
-      s->scene.status.alert_text1[0] = '\0';
-    }
-
-    if (datad.alertTextMsg2.str) 
-    {
-      snprintf(s->scene.status.alert_text2, sizeof(s->scene.status.alert_text2), "%s", datad.alertTextMsg2.str);
-    } 
-    else 
-    {
-      s->scene.status.alert_text2[0] = '\0';
-    }
 
 }
 
