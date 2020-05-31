@@ -160,6 +160,15 @@ typedef struct UIScene {
   cereal::HealthData::HwType hwType;
   int satelliteCount;
   uint8_t athenaStatus;
+
+  struct _STATUS_
+  {
+      float vCurvature; 
+      int  nCanError;
+      int  cruise_set_mode;
+      char alert_text1[512];
+      char alert_text2[512];
+  } alert_msg;  
 } UIScene;
 
 typedef struct {
@@ -298,14 +307,7 @@ typedef struct UIState {
   track_vertices_data track_vertices[2];
 
 
-  struct _STATUS_
-  {
-      float vCurvature; 
-      int  nCanError;
-      int  cruise_set_mode;
-      char alert_text1[512];
-      char alert_text2[512];
-  } alert_msg;
+
 } UIState;
 
 // API
