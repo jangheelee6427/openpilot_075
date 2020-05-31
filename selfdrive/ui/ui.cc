@@ -532,6 +532,27 @@ void handle_message(UIState *s,  Message* msg) {
     s->active_app = cereal::UiLayoutState::App::NONE;
     update_offroad_layout_state(s);
   }
+
+
+// debug Message
+    if (datad.alertTextMsg1.str) 
+    {
+      snprintf(s->scene.status.alert_text1, sizeof(s->scene.status.alert_text1), "%s", datad.alertTextMsg1.str);
+    } 
+    else 
+    {
+      s->scene.status.alert_text1[0] = '\0';
+    }
+
+    if (datad.alertTextMsg2.str) 
+    {
+      snprintf(s->scene.status.alert_text2, sizeof(s->scene.status.alert_text2), "%s", datad.alertTextMsg2.str);
+    } 
+    else 
+    {
+      s->scene.status.alert_text2[0] = '\0';
+    }
+
 }
 
 static void check_messages(UIState *s) {

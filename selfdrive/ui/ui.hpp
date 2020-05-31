@@ -296,6 +296,16 @@ typedef struct UIState {
   model_path_vertices_data model_path_vertices[MODEL_LANE_PATH_CNT * 2];
 
   track_vertices_data track_vertices[2];
+
+
+  struct _STATUS_
+  {
+      float vCurvature; 
+      int  nCanError;
+      int  cruise_set_mode;
+      char alert_text1[512];
+      char alert_text2[512];
+  } status;
 } UIState;
 
 // API

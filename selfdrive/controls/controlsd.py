@@ -26,6 +26,8 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.planner import LON_MPC_STEP
 from selfdrive.locationd.calibration_helpers import Calibration, Filter
 
+import common.log as  trace1
+
 LANE_DEPARTURE_THRESHOLD = 0.1
 STEER_ANGLE_SATURATION_TIMEOUT = 1.0 / DT_CTRL
 STEER_ANGLE_SATURATION_THRESHOLD = 2.5  # Degrees
@@ -312,6 +314,8 @@ def data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk
               last_blinker_frame, is_ldw_enabled, can_error_counter):
   """Send actuators and hud commands to the car, send controlsstate and MPC logging"""
 
+  global trace1
+
   CC = car.CarControl.new_message()
   CC.enabled = isEnabled(state)
   CC.actuators = actuators
@@ -406,6 +410,8 @@ def data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk
     "mapValid": sm['plan'].mapValid,
     "forceDecel": bool(force_decel),
     "canErrorCounter": can_error_counter,
+    "alertTextMsg1": str(trace1.global_alertTextMsg1),
+    "alertTextMsg2": str(trace1.global_alertTextMsg2)    
   }
 
   if CP.lateralTuning.which() == 'pid':
