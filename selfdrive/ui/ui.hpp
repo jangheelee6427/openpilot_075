@@ -165,12 +165,12 @@ typedef struct UIScene {
   // dev ui
   uint16_t maxCpuTemp;
   uint32_t maxBatTemp;
-  uint64_t started_ts;
+  //uint64_t started_ts;
   float angleSteers;  
   float angleSteersDes;
-  float pa0;
-  float freeSpace;
-  float gpsAccuracy;
+  //float pa0;  // scene.paTemp
+  //float freeSpace;
+  //float gpsAccuracy;
 
 
 

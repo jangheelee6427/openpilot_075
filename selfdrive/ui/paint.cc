@@ -494,7 +494,8 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
-
+  
+/*
     //add battery level
     if(true) {
     char val_str[16];
@@ -529,6 +530,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
     bb_ry = bb_y + bb_h;
   }
 
+
   //add grey panda GPS accuracy
   if (true) {
     char val_str[16];
@@ -550,7 +552,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
-
+*/
   //add free space - from bthaler1
   /*if (true) {
     char val_str[16];
