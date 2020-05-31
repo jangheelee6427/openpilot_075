@@ -71,21 +71,21 @@ class CarController():
 
     can_sends = []
 
-    if frame == 0: # initialize counts from last received count signals
-      self.lkas11_cnt = CS.lkas11["CF_Lkas_MsgCount"] + 1
+    #if frame == 0: # initialize counts from last received count signals
+    #  self.lkas11_cnt = CS.lkas11["CF_Lkas_MsgCount"] + 1
       #self.scc12_cnt = CS.scc12["CR_VSM_Alive"] + 1 if not CS.no_radar else 0
 
-    self.lkas11_cnt %= 0x10
+    #self.lkas11_cnt %= 0x10
     #self.clu11_cnt = frame % 0x10
     #self.mdps12_cnt = frame % 0x100
 
-    can_sends.append(create_lkas11(self.packer, self.lkas11_cnt, self.car_fingerprint, apply_steer, lkas_active,
+    can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
                                    CS.lkas11, sys_warning, sys_state, enabled,
                                    left_lane, right_lane,
                                    left_lane_warning, right_lane_warning))
 
 
-    can_sends.append(create_mdps12(self.packer, frame, CS.mdps12))
+    #can_sends.append(create_mdps12(self.packer, frame, CS.mdps12))
 
 
     if pcm_cancel_cmd:
