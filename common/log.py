@@ -1,5 +1,5 @@
 import datetime
-import common.CTime1000 as tm
+
 
 ROOT_LOG = '/data/media/0/realdata/'
 
@@ -26,7 +26,7 @@ class Loger:
         self.nTime = time_val * 0.001
         self.old_txt = ""
         self.debug_Timer = 0
-        self.Timer1 = tm.CTime1000("LOG")
+
 
     def __del__(self):
         print( "{} - Loger class delete".format( self.name ))
@@ -34,28 +34,25 @@ class Loger:
 
 
     def add( self, txt ):
-        if self.Timer1.endTime():
-           self.Timer1.startTime( self.nTime )
+        if txt == self.old_txt:
+            pass
+        else:
+            self.old_txt = txt
+            now = datetime.datetime.now()
+            cur_date = "{}{}{}".format(now.year, now.month, now.day )
+            cur_time = "{}:{}:{}:{}".format(  now.hour, now.minute, now.second, now.microsecond ) 
 
-           if txt == self.old_txt:
-               pass
-           else:
-                self.old_txt = txt
-                now = datetime.datetime.now()
-                cur_date = "{}{}{}".format(now.year, now.month, now.day )
-                cur_time = "{}:{}:{}:{}".format(  now.hour, now.minute, now.second, now.microsecond ) 
-
-                log_data = "{}-{} {}\r\n".format( cur_date, cur_time , txt) 
-                #print( log_data )
-                try:
-                    path_file_name = ROOT_LOG + cur_date + '-' + self.name + ".txt"
-                    with open( path_file_name, "a") as file:
-                        file.write( log_data )
-                except:
-                    print("file open error file name:", path_file_name)
-                    pass
-                finally:  # try end 
-                    pass       
+            log_data = "{}-{} {}\r\n".format( cur_date, cur_time , txt) 
+            #print( log_data )
+            try:
+                path_file_name = ROOT_LOG + cur_date + '-' + self.name + ".txt"
+                with open( path_file_name, "a") as file:
+                    file.write( log_data )
+            except:
+                print("file open error file name:", path_file_name)
+                pass
+            finally:  # try end 
+                pass       
 
 
 
