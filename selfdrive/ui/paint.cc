@@ -27,7 +27,7 @@ const uint8_t alert_colors[][4] = {
   [STATUS_ALERT] = {0xC9, 0x22, 0x31, 0xe},
 };
 
-float  fFontSize = 0.8;
+extern float  fFontSize;
 
 // Projects a point in car to space to the corresponding point in full frame
 // image space.
