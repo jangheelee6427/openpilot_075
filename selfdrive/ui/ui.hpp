@@ -161,6 +161,19 @@ typedef struct UIScene {
   int satelliteCount;
   uint8_t athenaStatus;
 
+
+  // dev ui
+  uint16_t maxCpuTemp;
+  uint32_t maxBatTemp;
+  uint64_t started_ts;
+  float angleSteers;  
+  float angleSteersDes;
+  float pa0;
+  float freeSpace;
+  float gpsAccuracy;
+
+
+
   struct _STATUS_
   {
       float vCurvature; 
