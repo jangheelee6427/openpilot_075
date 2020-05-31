@@ -305,7 +305,7 @@ typedef struct UIState {
       int  cruise_set_mode;
       char alert_text1[512];
       char alert_text2[512];
-  } status;
+  } alert_msg;
 } UIState;
 
 // API

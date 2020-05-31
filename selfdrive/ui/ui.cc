@@ -440,25 +440,25 @@ void handle_message(UIState *s,  Message* msg) {
     }
 
 /*
-    std::string user_text1 = data.getalertTextMsg1();
-    std::string user_text2 = data.getalertTextMsg2();;
+    std::string user_text1 = data.getAlertTextMsg1();
+    std::string user_text2 = data.getAlertTextMsg2();;
 // debug Message
     if (user_text1) 
     {
-      snprintf(s->scene.status.alert_text1, sizeof(s->scene.status.alert_text1), "%s", user_text1);
+      snprintf(s->scene.alert_msg.alert_text1, sizeof(s->scene.alert_msg.alert_text1), "%s", user_text1);
     } 
     else 
     {
-      s->scene.status.alert_text1[0] = '\0';
+      s->scene.alert_msg.alert_text1[0] = '\0';
     }
 
     if (user_text2) 
     {
-      snprintf(s->scene.status.alert_text2, sizeof(s->scene.status.alert_text2), "%s", user_text2);
+      snprintf(s->scene.alert_msg.alert_text2, sizeof(s->scene.alert_msg.alert_text2), "%s", user_text2);
     } 
     else 
     {
-      s->scene.status.alert_text2[0] = '\0';
+      s->scene.alert_msg.alert_text2[0] = '\0';
     }
 */    
 
