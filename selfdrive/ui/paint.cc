@@ -915,7 +915,7 @@ static void ui_draw_vision_speed(UIState *s) {
 //    scene.brakeLights = data.getBrakeLights();
 //    scene.nGearShifter = data.getGearShifter(); // == cereal::CarState::GearShifter::REVERSE;
 
-  if( scene.brakeLights )
+  if( scene->brakeLights )
    val_color = COLOR_RED;
 
   snprintf(speed_str, sizeof(speed_str), "%d", (int)speed);
