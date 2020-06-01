@@ -546,7 +546,7 @@ void handle_message(UIState *s,  Message* msg) {
 
     scene.leftBlinker = data.getLeftBlinker();
     scene.rightBlinker = data.getRightBlinker();
-    scene.brakeLights = data.getBrakeLights();
+    scene.brakePressed = data.getBrakePressed();
     scene.nGearShifter = data.getGearShifter(); // == cereal::CarState::GearShifter::REVERSE;
   }
 
