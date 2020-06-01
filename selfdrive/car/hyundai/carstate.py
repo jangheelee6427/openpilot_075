@@ -74,7 +74,7 @@ class CarState(CarStateBase):
     ret.brakePressed = cp.vl["TCS13"]['DriverBraking'] != 0
 
     # TODO: Check this
-    ret.brakeLights = bool(cp.vl["TCS13"]['BrakeLight'] or ret.brakePressed)
+    ret.brakeLights = bool(cp.vl["TCS13"]['BrakeLight']) ## or ret.brakePressed)
 
     #TODO: find pedal signal for EV/HYBRID Cars
     ret.gas = cp.vl["EMS12"]['PV_AV_CAN'] / 100 if self.CP.carFingerprint not in FEATURES["use_elect_ems"] else \
