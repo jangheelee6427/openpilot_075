@@ -904,6 +904,7 @@ static void ui_draw_vision_speed(UIState *s) {
   const int viz_speed_w = 280;
   const int viz_speed_x = scene->ui_viz_rx+((scene->ui_viz_rw/2)-(viz_speed_w/2));
   char speed_str[32];
+  char kph_str[32];
   NVGcolor val_color = COLOR_WHITE;// nvgRGBA(255, 255, 255, 200);
 
   nvgBeginPath(s->vg);
@@ -916,11 +917,20 @@ static void ui_draw_vision_speed(UIState *s) {
 //    scene.nGearShifter = data.getGearShifter(); // == cereal::CarState::GearShifter::REVERSE;
 
   if( scene->brakeLights )
-   val_color = COLOR_RED;
+  {
+    val_color = COLOR_RED;
+  }
+
+  if( s->is_metric )
+    snprintf(kph_str, sizeof(kph_str), "km/h(%d)", scene->nGearShifter );
+  else
+    snprintf(kph_str, sizeof(kph_str), "mph(%d)", scene->nGearShifter );
+
 
   snprintf(speed_str, sizeof(speed_str), "%d", (int)speed);
+
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 240, speed_str, 96*2.5, val_color, s->font_sans_bold);
-  ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"km/h":"mph", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+  ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, kph_str, 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
   ui_draw_debug( s );
 }
