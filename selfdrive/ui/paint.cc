@@ -922,8 +922,6 @@ static void ui_draw_vision_speed(UIState *s) {
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 240, speed_str, 96*2.5, val_color, s->font_sans_bold);
   ui_draw_text(s->vg, viz_speed_x + viz_speed_w / 2, 320, s->is_metric?"km/h":"mph", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
-  ui_draw_text(NVGcontext *vg, float x, float y, const char* string, float size, NVGcolor color, int font)
-
   ui_draw_debug( s );
 }
 
