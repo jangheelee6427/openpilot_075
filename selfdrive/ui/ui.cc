@@ -397,7 +397,6 @@ void handle_message(UIState *s,  Message* msg) {
     scene.gps_planner_active = data.getGpsPlannerActive();
     scene.monitoring_active = data.getDriverMonitoringOn();
     scene.steerOverride = data.getSteerOverride();
-    //scene.output_scale = pdata.getOutput();
 
     scene.decel_for_model = data.getDecelForModel();
     auto alert_sound = data.getAlertSound();
@@ -443,7 +442,6 @@ void handle_message(UIState *s,  Message* msg) {
       }
     }
 
-
     std::string user_text1 = data.getAlertTextMsg1();
     std::string user_text2 = data.getAlertTextMsg2();
 
@@ -451,16 +449,19 @@ void handle_message(UIState *s,  Message* msg) {
     const char* va_text1 = user_text1.c_str();
     const char* va_text2 = user_text2.c_str();
     if (va_text1) 
-      snprintf(s->scene.alert_msg.alert_text1, sizeof(s->scene.alert_msg.alert_text1), "[%s", va_text1);
+      snprintf(scene.alert_msg.alert_text1, sizeof(scene.alert_msg.alert_text1), "[%s", va_text1);
     else 
-      s->scene.alert_msg.alert_text1[0] = '\0';
+      scene.alert_msg.alert_text1[0] = '\0';
 
 
     if (va_text2) 
-      snprintf(s->scene.alert_msg.alert_text2, sizeof(s->scene.alert_msg.alert_text2), "[%s", va_text2);
+      snprintf(scene.alert_msg.alert_text2, sizeof(scene.alert_msg.alert_text2), "[%s", va_text2);
     else 
-      s->scene.alert_msg.alert_text2[0] = '\0';
+      scene.alert_msg.alert_text2[0] = '\0';
 
+
+    auto pdata = data.lateralControlState.getPidState();
+    scene.output_scale = pdata.getOutput();
 
   } else if (which == cereal::Event::RADAR_STATE) {
     auto data = event.getRadarState();
