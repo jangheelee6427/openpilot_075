@@ -389,6 +389,8 @@ void handle_message(UIState *s,  Message* msg) {
     }
     scene.v_cruise = data.getVCruise();
     scene.v_ego = data.getVEgo();
+    scene.angleSteers = data.getAngleSteers();
+    scene.angleSteersDes = data.getAngleSteersDes();
     scene.curvature = data.getCurvature();
     scene.engaged = data.getEnabled();
     scene.engageable = data.getEngageable();
@@ -448,7 +450,7 @@ void handle_message(UIState *s,  Message* msg) {
     const char* va_text2 = user_text2.c_str();
     if (va_text1) 
     {
-      snprintf(s->scene.alert_msg.alert_text1, sizeof(s->scene.alert_msg.alert_text1), "%s", va_text1);
+      snprintf(s->scene.alert_msg.alert_text1, sizeof(s->scene.alert_msg.alert_text1), "[%s", va_text1);
     } 
     else 
     {
@@ -457,7 +459,7 @@ void handle_message(UIState *s,  Message* msg) {
 
     if (va_text2) 
     {
-      snprintf(s->scene.alert_msg.alert_text2, sizeof(s->scene.alert_msg.alert_text2), "%s", va_text2);
+      snprintf(s->scene.alert_msg.alert_text2, sizeof(s->scene.alert_msg.alert_text2), "[%s", va_text2);
     } 
     else 
     {
@@ -519,6 +521,9 @@ void handle_message(UIState *s,  Message* msg) {
     scene.freeSpace = data.getFreeSpace();
     scene.thermalStatus = data.getThermalStatus();
     scene.paTemp = data.getPa0();
+
+    scene.maxBatTemp = scene.getBat();
+    scene.maxCpuTemp = scene.getCpu0(); 
 
     s->thermal_started = data.getStarted();
   } else if (which == cereal::Event::UBLOX_GNSS) {
