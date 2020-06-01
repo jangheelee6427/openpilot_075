@@ -232,11 +232,28 @@ static void ui_draw_track(UIState *s, bool is_mpc, track_vertices_data *pvd) {
   nvgClosePath(s->vg);
 
   NVGpaint track_bg;
+  NVGcolor  color1, color2;
   if (is_mpc) {
     // Draw colored MPC track
-    const uint8_t *clr = bg_colors[s->status];
-    track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-      nvgRGBA(clr[0], clr[1], clr[2], 255), nvgRGBA(clr[0], clr[1], clr[2], 255/2));
+    if (scene->steerOverride) {
+      color1 = nvgRGBA(0, 191, 255, 255);
+      color2 = nvgRGBA(0, 95, 128, 50);
+    }
+    else
+    {
+/*      
+      const uint8_t *clr = bg_colors[s->status];
+      color1 = nvgRGBA(clr[0], clr[1], clr[2], 255);
+      color2 = nvgRGBA(clr[0], clr[1], clr[2], 255/2);
+*/
+      int torque_scale = (int)fabs(510*(float)s->scene.output_scale);
+      int red_lvl = fmin(255, torque_scale);
+      int green_lvl = fmin(255, 510-torque_scale);
+
+      color1 = nvgRGBA( red_lvl, green_lvl, 0, 255);
+      color2 = nvgRGBA((int)(0.5*red_lvl), (int)(0.5*green_lvl), 0, 50);
+    }
+    track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4, color1, color2 );
   } else {
     // Draw white vision track
     track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
