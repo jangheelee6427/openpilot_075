@@ -172,7 +172,7 @@ class CarController():
     if frame % 5 == 0 and self.car_fingerprint in [CAR.SONATA, CAR.PALISADE, CAR.SONATA_H]:
       can_sends.append(create_lfa_mfa(self.packer, frame, enabled))
 
-    str_log1 = 'torg:{:5.0f} SA={:.1f} brak={}'.format( apply_steer, CS.out.steeringAngle, CS.brakeLights )
+    str_log1 = 'torg:{:5.0f} SA={:.1f} brak={}'.format( apply_steer, CS.out.steeringAngle, CS.out.brakeLights )
     ##str_log2 = 'steer={:5.0f} sw{:.0f}'.format( CS.steer_torque_driver, CS.clu_CruiseSwState  )
     trace1.printf( '{} '.format( str_log1 ) )
 
