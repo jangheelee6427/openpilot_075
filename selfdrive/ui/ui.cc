@@ -522,8 +522,8 @@ void handle_message(UIState *s,  Message* msg) {
     scene.thermalStatus = data.getThermalStatus();
     scene.paTemp = data.getPa0();
 
-    scene.maxBatTemp = scene.getBat();
-    scene.maxCpuTemp = scene.getCpu0(); 
+    scene.maxBatTemp = data.getBat();
+    scene.maxCpuTemp = data.getCpu0(); 
 
     s->thermal_started = data.getStarted();
   } else if (which == cereal::Event::UBLOX_GNSS) {
