@@ -459,9 +459,9 @@ void handle_message(UIState *s,  Message* msg) {
     else 
       scene.alert_msg.alert_text2[0] = '\0';
 
-
-    auto pdata = data.lateralControlState.getPidState();
-    scene.output_scale = pdata.getOutput();
+    auto lateralControlState = data.getLateralControlState();
+    auto pidState = lateralControlState.getPidState();
+    scene.output_scale = pidState.getOutput();
 
   } else if (which == cereal::Event::RADAR_STATE) {
     auto data = event.getRadarState();
