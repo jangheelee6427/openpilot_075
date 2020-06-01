@@ -164,7 +164,7 @@ typedef struct UIScene {
 
 
   // pathcoloring
-  //float output_scale;
+  float output_scale;
   bool steerOverride;
 
   // dev ui

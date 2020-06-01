@@ -397,6 +397,7 @@ void handle_message(UIState *s,  Message* msg) {
     scene.gps_planner_active = data.getGpsPlannerActive();
     scene.monitoring_active = data.getDriverMonitoringOn();
     scene.steerOverride = data.getSteerOverride();
+    //scene.output_scale = pdata.getOutput();
 
     scene.decel_for_model = data.getDecelForModel();
     auto alert_sound = data.getAlertSound();
