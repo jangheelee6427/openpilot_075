@@ -29,14 +29,17 @@ def accel_hysteresis(accel, accel_steady):
 
 def process_hud_alert(enabled, fingerprint, visual_alert, left_lane,
                       right_lane, left_lane_depart, right_lane_depart, button_on):
-  sys_warning = (visual_alert == VisualAlert.steerRequired)
+  #sys_warning = (visual_alert == VisualAlert.steerRequired)
+  sys_warning = 0
+  if visual_alert == VisualAlert.steerRequired:
+    sys_warning = 3
 
   # initialize to no line visible
   sys_state = 1
   if not button_on:
     lane_visible = 0
-  if left_lane and right_lane or sys_warning:  #HUD alert only display when LKAS status is active
-    if enabled or sys_warning:
+  if left_lane and right_lane:  #HUD alert only display when LKAS status is active
+    if enabled:
       sys_state = 3
     else:
       sys_state = 4
@@ -69,7 +72,7 @@ class CarController():
     self.last_resume_frame = 0
     self.last_lead_distance = 0
     self.turning_signal_timer = 0
-    self.lkas_button_on = True
+    #self.lkas_button_on = True
     self.longcontrol = False #TODO: make auto
 
   def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, visual_alert,
@@ -90,7 +93,7 @@ class CarController():
 
     # disable if steer angle reach 90 deg, otherwise mdps fault in some models
     # temporarily disable steering when LKAS button off 
-    lkas_active = enabled and abs(CS.out.steeringAngle) < 90. and self.lkas_button_on
+    lkas_active = enabled and abs(CS.out.steeringAngle) < 90. and CS.out.lkas_button_on
 
     # fix for Genesis hard fault at low speed
     if CS.out.vEgo < 16.7 and self.car_fingerprint == CAR.HYUNDAI_GENESIS and not CS.mdps_bus:
@@ -115,7 +118,7 @@ class CarController():
     sys_warning, sys_state, left_lane_warning, right_lane_warning =\
       process_hud_alert(lkas_active, self.car_fingerprint, visual_alert,
                         left_lane, right_lane, left_lane_depart, right_lane_depart,
-                        self.lkas_button_on)
+                        CS.out.lkas_button_on)
 
     clu11_speed = CS.clu11["CF_Clu_Vanz"]
     enabled_speed = 38 if CS.is_set_speed_in_mph  else 60
@@ -134,21 +137,21 @@ class CarController():
                                    CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
                                    left_lane_warning, right_lane_warning, 0))
 
-    if CS.mdps_bus or CS.scc_bus == 1: # send lkas11 bus 1 if mdps or scc is on bus 1
-      can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
-                                   CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
-                                   left_lane_warning, right_lane_warning, 1))
-    if CS.mdps_bus: # send clu11 to mdps if it is not on bus 0
-      can_sends.append(create_clu11(self.packer, frame, CS.mdps_bus, CS.clu11, Buttons.NONE, enabled_speed))
+    #if CS.mdps_bus or CS.scc_bus == 1: # send lkas11 bus 1 if mdps or scc is on bus 1
+    #  can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
+    #                               CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
+    #                               left_lane_warning, right_lane_warning, 1))
+    #if CS.mdps_bus: # send clu11 to mdps if it is not on bus 0
+    #  can_sends.append(create_clu11(self.packer, frame, CS.mdps_bus, CS.clu11, Buttons.NONE, enabled_speed))
 
-    if pcm_cancel_cmd and self.longcontrol:
-      can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.CANCEL, clu11_speed))
-    elif CS.mdps_bus: # send mdps12 to LKAS to prevent LKAS error if no cancel cmd
-      can_sends.append(create_mdps12(self.packer, frame, CS.mdps12))
+    #if pcm_cancel_cmd and self.longcontrol:
+    #  can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.CANCEL, clu11_speed))
+    #elif CS.mdps_bus: # send mdps12 to LKAS to prevent LKAS error if no cancel cmd
+    #  can_sends.append(create_mdps12(self.packer, frame, CS.mdps12))
 
-    if CS.scc_bus and self.longcontrol and frame % 2: # send scc12 to car if SCC not on bus 0 and longcontrol enabled
-      can_sends.append(create_scc12(self.packer, apply_accel, enabled, self.scc12_cnt, CS.scc12))
-      self.scc12_cnt += 1
+    #if CS.scc_bus and self.longcontrol and frame % 2: # send scc12 to car if SCC not on bus 0 and longcontrol enabled
+    #  can_sends.append(create_scc12(self.packer, apply_accel, enabled, self.scc12_cnt, CS.scc12))
+    #  self.scc12_cnt += 1
 
     if CS.out.cruiseState.standstill:
       # run only first time when the car stopped

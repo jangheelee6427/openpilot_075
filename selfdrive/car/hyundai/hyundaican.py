@@ -9,13 +9,13 @@ def create_lkas11(packer, frame, car_fingerprint, apply_steer, steer_req,
                   left_lane, right_lane,
                   left_lane_depart, right_lane_depart, bus):
   values = lkas11
-  values["CF_Lkas_LdwsSysState"] = sys_state
-  values["CF_Lkas_SysWarning"] = 3 if sys_warning else 0
-  values["CF_Lkas_LdwsLHWarning"] = left_lane_depart
-  values["CF_Lkas_LdwsRHWarning"] = right_lane_depart
-    
-  #values["CF_Lkas_LdwsSysState"] = lkas11["CF_Lkas_LdwsSysState"] if not enabled else sys_state
-  #values["CF_Lkas_SysWarning"] = lkas11["CF_Lkas_SysWarning"] if not enabled else sys_warning
+  #values["CF_Lkas_LdwsSysState"] = sys_state
+  #values["CF_Lkas_SysWarning"] = 3 if sys_warning else 0
+  #values["CF_Lkas_LdwsLHWarning"] = left_lane_depart
+  #values["CF_Lkas_LdwsRHWarning"] = right_lane_depart
+
+  values["CF_Lkas_LdwsSysState"] = lkas11["CF_Lkas_LdwsSysState"] if not enabled else sys_state
+  values["CF_Lkas_SysWarning"] = lkas11["CF_Lkas_SysWarning"] if not enabled else sys_warning
   values["CR_Lkas_StrToqReq"] = apply_steer
   values["CF_Lkas_ActToi"] = steer_req
   values["CF_Lkas_ToiFlt"] = 0
