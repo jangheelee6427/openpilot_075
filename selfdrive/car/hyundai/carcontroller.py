@@ -173,7 +173,7 @@ class CarController():
       can_sends.append(create_lfa_mfa(self.packer, frame, enabled))
 
     str_log1 = 'torg:{:5.0f} SA={:.0f}'.format( apply_steer, CS.out.steeringAngle )
-    str_log2 = 'steer={:5.0f} sw{:.0f}'.format( CS.steer_torque_driver, CS.clu_CruiseSwState  )
-    trace1.printf( '{} {}'.format( str_log1, str_log2 ) )
+    ##str_log2 = 'steer={:5.0f} sw{:.0f}'.format( CS.steer_torque_driver, CS.clu_CruiseSwState  )
+    trace1.printf( '{} '.format( str_log1 ) )
 
     return can_sends
