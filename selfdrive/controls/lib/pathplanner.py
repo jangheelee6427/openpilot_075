@@ -7,6 +7,7 @@ from selfdrive.controls.lib.drive_helpers import MPC_COST_LAT
 from selfdrive.controls.lib.lane_planner import LanePlanner
 from selfdrive.config import Conversions as CV
 from common.params import Params
+from common.numpy_fast import interp
 import cereal.messaging as messaging
 from cereal import log
 
@@ -66,6 +67,16 @@ class PathPlanner():
     self.lane_change_BSM = LaneChangeBSM.off
     self.prev_torque_applied = False
 
+
+  def limit_ctrl(self, value, limit, offset ):
+      p_limit = offset + limit
+      m_limit = offset - limit
+      if value > p_limit:
+          value = p_limit
+      elif  value < m_limit:
+          value = m_limit
+      return value
+
   def setup_mpc(self):
     self.libmpc = libmpc_py.libmpc
     self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, self.steer_rate_cost)
@@ -91,6 +102,8 @@ class PathPlanner():
 
     lca_left = sm['carState'].leftBlindspot
     lca_right = sm['carState'].rightBlindspot
+
+    v_ego_kph = v_ego * CV.MS_TO_KPH
 
     # Run MPC
     self.angle_steers_des_prev = self.angle_steers_des_mpc
@@ -190,6 +203,13 @@ class PathPlanner():
     self.cur_state[0].delta = delta_desired
 
     self.angle_steers_des_mpc = float(math.degrees(delta_desired * VM.sR) + angle_offset)
+    org_angle_steers_des = self.angle_steers_des_mpc
+
+    if v_ego_kph < 20:
+        xp = [5,10,20]
+        fp2 = [0.5,2,3]
+        limit_steers = interp( v_ego_kph, xp, fp2 )
+        self.angle_steers_des_mpc = self.limit_ctrl( org_angle_steers_des, limit_steers, angle_steers )
 
     #  Check for infeasable MPC solution
     mpc_nans = any(math.isnan(x) for x in self.mpc_solution[0].delta)
