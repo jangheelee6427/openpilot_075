@@ -938,10 +938,11 @@ static void ui_draw_vision_speed(UIState *s) {
     val_color = COLOR_RED;
   }
 
+  int  nGearShifter = (int)scene->nGearShifter;
   if( s->is_metric )
-    snprintf(kph_str, sizeof(kph_str), "km/h(%d)", scene->nGearShifter );
+    snprintf(kph_str, sizeof(kph_str), "km/h(%d)", nGearShifter );
   else
-    snprintf(kph_str, sizeof(kph_str), "mph(%d)", scene->nGearShifter );
+    snprintf(kph_str, sizeof(kph_str), "mph(%d)", nGearShifter );
 
 
   snprintf(speed_str, sizeof(speed_str), "%d", (int)speed);
