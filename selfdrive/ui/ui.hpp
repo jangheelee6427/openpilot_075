@@ -166,13 +166,14 @@ typedef struct UIScene {
   // dev ui
   uint16_t maxCpuTemp;
   uint32_t maxBatTemp;
-  //uint64_t started_ts;
   float angleSteers;  
   float angleSteersDes;
-  //float pa0;  // scene.paTemp
-  //float freeSpace;
-  //float gpsAccuracy;
 
+
+  bool leftBlinker;
+  bool rightBlinker;
+  bool brakeLights;
+  int  nGearShifter;
 
 
   struct _STATUS_

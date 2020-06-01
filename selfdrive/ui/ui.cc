@@ -449,22 +449,15 @@ void handle_message(UIState *s,  Message* msg) {
     const char* va_text1 = user_text1.c_str();
     const char* va_text2 = user_text2.c_str();
     if (va_text1) 
-    {
       snprintf(s->scene.alert_msg.alert_text1, sizeof(s->scene.alert_msg.alert_text1), "[%s", va_text1);
-    } 
     else 
-    {
       s->scene.alert_msg.alert_text1[0] = '\0';
-    }
+
 
     if (va_text2) 
-    {
       snprintf(s->scene.alert_msg.alert_text2, sizeof(s->scene.alert_msg.alert_text2), "[%s", va_text2);
-    } 
     else 
-    {
       s->scene.alert_msg.alert_text2[0] = '\0';
-    }
 
 
   } else if (which == cereal::Event::RADAR_STATE) {
@@ -545,6 +538,13 @@ void handle_message(UIState *s,  Message* msg) {
     scene.is_rhd = data.getIsRHD();
     scene.awareness_status = data.getAwarenessStatus();
     s->preview_started = data.getIsPreview();
+  } else if (which == cereal::Event::CAR_STATE) {
+    auto data = event.getCarState();
+
+    scene.leftBlinker = data.getLeftBlinker();
+    scene.rightBlinker = data.getRightBlinker();
+    scene.brakeLights = data.getBrakeLights();
+    scene.nGearShifter = data.getGearShifter(); // == cereal::CarState::GearShifter::REVERSE;
   }
 
   s->started = s->thermal_started || s->preview_started ;
