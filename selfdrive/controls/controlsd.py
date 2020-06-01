@@ -548,6 +548,11 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
 
   prof = Profiler(False)  # off by default
 
+
+  hyundai_lkas = True  #read_only
+  hyundai_timer1 = 0
+  hyundai_timer2 = 200
+
   while True:
     start_time = sec_since_boot()
     prof.checkpoint("Ratekeeper", ignore=True)
@@ -555,6 +560,14 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     # Sample data and compute car events
     CS, events, cal_perc, mismatch_counter, can_error_counter = data_sample(CI, CC, sm, can_sock, state, mismatch_counter, can_error_counter, params)
     prof.checkpoint("Sample")
+
+    if read_only:
+      hyundai_lkas = read_only
+    elif hyundai_timer2:
+      hyundai_timer2 -= 1
+    elif CS.cruiseState.enabled:
+      hyundai_lkas = False
+      hyundai_timer1 = 0
 
     # Create alerts
     if not sm.alive['plan'] and sm.alive['pathPlan']:  # only plan not being received: radar not communicating
@@ -591,7 +604,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     if CS.brakePressed and sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED and not CP.radarOffCan and CS.vEgo < 0.3:
       events.append(create_event('noTarget', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
 
-    if not read_only:
+    if not hyundai_lkas:
       # update control state
       state, soft_disable_timer, v_cruise_kph, v_cruise_kph_last = \
         state_transition(sm.frame, CS, CP, state, events, soft_disable_timer, v_cruise_kph, AM)
@@ -600,18 +613,23 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
     # Compute actuators (runs PID loops and lateral MPC)
     actuators, v_cruise_kph, v_acc, a_acc, lac_log, last_blinker_frame, saturated_count = \
       state_control(sm.frame, sm.rcv_frame, sm['plan'], sm['pathPlan'], CS, CP, state, events, v_cruise_kph, v_cruise_kph_last, AM, rk,
-                    LaC, LoC, read_only, is_metric, cal_perc, last_blinker_frame, saturated_count)
+                    LaC, LoC, hyundai_lkas, is_metric, cal_perc, last_blinker_frame, saturated_count)
 
     prof.checkpoint("State Control")
 
     # Publish data
     CC, events_prev = data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, AM, LaC,
-                                LoC, read_only, start_time, v_acc, a_acc, lac_log, events_prev, last_blinker_frame,
+                                LoC, hyundai_lkas, start_time, v_acc, a_acc, lac_log, events_prev, last_blinker_frame,
                                 is_ldw_enabled, can_error_counter)
     prof.checkpoint("Sent")
 
     rk.monitor_time()
     prof.display()
+
+    if not CS.cruiseState.enabled and not hyundai_lkas:
+        hyundai_timer1 += 1
+        if hyundai_timer1 > 50:
+          hyundai_lkas = True
 
 
 def main(sm=None, pm=None, logcan=None):
