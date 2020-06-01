@@ -173,7 +173,7 @@ typedef struct UIScene {
   bool leftBlinker;
   bool rightBlinker;
   bool brakeLights;
-  int  nGearShifter;
+  cereal::CarState::GearShifter  nGearShifter;
 
 
   struct _STATUS_
